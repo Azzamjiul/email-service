@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
@@ -56,7 +57,8 @@ func (p *Publisher) Publish(ctx context.Context, message interface{}) error {
 		input.MessageGroupId = String("default")
 
 		// Generate a message deduplication ID based on the message content
-		hash := fmt.Sprintf("%x", sha256.Sum256(messageBody))
+		hashBody := time.Now().String()
+		hash := fmt.Sprintf("%x", sha256.Sum256([]byte(hashBody)))
 		input.MessageDeduplicationId = String(hash)
 	}
 

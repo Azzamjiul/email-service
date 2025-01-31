@@ -99,6 +99,23 @@ func sqsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	messageReq = SQSMessageRequest{
+		Message: map[string]interface{}{
+			"data": map[string]interface{}{
+				"buttonUrl":               "https://dummy.com/history?utm_source=system-notification&utm_medium=email&utm_campaign=submission-rejected",
+				"dateCompletion":          "31 Jan 2025",
+				"notificationSettingsUrl": "https://dummy.com/notification-settings",
+				"partnerName":             "HAHAHAHA",
+				"faqPage":                 "https://intercom.help/something/en/collections/wkwkwk",
+				"surveyName":              "AFAAN",
+			},
+			"recipients": []string{"user@gmail.com"},
+			"subject":    "Welcome to Our App",
+			"type":       "notifyUser",
+			"from":       "System by company",
+		},
+	}
+
 	err = sqsPublisher.Publish(r.Context(), messageReq.Message)
 	if err != nil {
 		http.Error(w, "Failed to publish message", http.StatusInternalServerError)
